@@ -1,6 +1,5 @@
 import os
 
-
 def load_vocab():
     # Load the vocab from file and split by comma
     vocab_file = "vocab/vocab.txt"
