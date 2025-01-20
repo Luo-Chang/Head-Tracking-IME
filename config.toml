@@ -1,0 +1,7 @@
+[udp]
+UDP_IP = "127.0.0.1"
+UDP_PORT = 4242
+
+[timer]
+allow_movement = 1500
+wait_comfirmation = 3000
