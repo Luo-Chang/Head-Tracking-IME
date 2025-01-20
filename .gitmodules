@@ -1,0 +1,3 @@
+[submodule "opentrack"]
+	path = opentrack
+	url = https://github.com/opentrack/opentrack.git
