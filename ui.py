@@ -1,4 +1,3 @@
-import sys
 from PySide6.QtWidgets import *
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QIcon, QScreen
@@ -128,12 +127,6 @@ class MainWindow(QMainWindow):
             self.ALLOW_INPUT = False
             self.start_stop_button.setText("开始输入▶")
         
-
-
-app = QApplication()
-window = MainWindow()
-window.show()
-app.exec()
 
 # TODO
 # 2. draw light yellow box and animation

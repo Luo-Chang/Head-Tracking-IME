@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import *
 from PySide6.QtCore import Qt, Signal
 
+# CharLabel: Display a single Chinese character
 class CharLabel(QLabel):
     def __init__(self, text):
         super().__init__(text)
@@ -18,6 +19,7 @@ class CharLabel(QLabel):
         """)
 
 
+# TextBlock: Display the user inputs
 class TextBlock(QLabel):
     def __init__(self, text):
         super().__init__(text)
@@ -34,6 +36,8 @@ class TextBlock(QLabel):
         """)
         self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
+
+# ControlButton: control buttons
 class ControlButton(QLabel):
     clicked = Signal()
     
