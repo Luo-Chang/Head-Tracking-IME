@@ -191,7 +191,7 @@ class MainWindow(QMainWindow):
                 self.text_block.setText(current_text[:-1])
     
     def handle_udp_input(self, x):
-        print(f"x: {x}")
+        # print(f"x: {x}")
         
         if x < -15:  # Move right
             if self.allow_move:

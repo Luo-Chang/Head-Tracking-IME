@@ -1,6 +1,10 @@
 from PySide6.QtWidgets import *
 from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QPainter, QPen, QColor, QBrush
+import tomllib
+
+with open("config.toml", "rb") as f:
+    config = tomllib.load(f)
 
 # Global variable to track the currently selected CharLabel or ControlButton
 current_selected = None
@@ -8,7 +12,8 @@ current_selected = None
 # CharLabel: Display a single Chinese character
 class CharLabel(QLabel):
     char_clicked = Signal(str)  # Custom signal to emit the character text when clicked
-    
+    long_press_triggered = Signal()  # Custom signal for long press detection
+
     default_style = """
             QLabel {
                 background-color: #FF626262;  /* Background color */
@@ -35,6 +40,11 @@ class CharLabel(QLabel):
         super().__init__(text)
         self.setStyleSheet(self.default_style)
 
+        # Timer for detecting long press (3 seconds)
+        self.long_press_timer = QTimer(self)
+        self.long_press_timer.setSingleShot(True)  # Trigger only once after 3 seconds
+        self.long_press_timer.timeout.connect(self.trigger_long_press)
+
     def mousePressEvent(self, event):
         # Emit the signal when the label is clicked
         self.char_clicked.emit(self.text())
@@ -54,10 +64,24 @@ class CharLabel(QLabel):
         
         # Apply selected style to this widget
         self.setStyleSheet(self.selected_style)
+
+        self.start_long_press_timer()
     
     def deselect(self):
         """Reset the style of the CharLabel to default when deselected."""
         self.setStyleSheet(self.default_style)
+        self.long_press_timer.stop()
+
+    def start_long_press_timer(self):
+        """Start the timer when the label is pressed."""
+        self.long_press_timer.start(config["timer"]["comfirmation_delay"])  # some seconds
+
+    def trigger_long_press(self):
+        """Trigger the long press action."""
+        print(f"Long press on {self.text()} detected.")
+        self.long_press_triggered.emit()  # Emit the long press signal
+
+        self.mousePressEvent(None)  # Trigger the mouse press event 
 
 
 # ControlButton: control buttons
