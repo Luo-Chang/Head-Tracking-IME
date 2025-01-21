@@ -3,13 +3,13 @@ from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QPainter, QPen, QColor, QBrush
 from utils.tts import invoke_tts
 
+# Global variable to track the currently selected CharLabel or ControlButton
+current_selected = None
 
 # CharLabel: Display a single Chinese character
 class CharLabel(QLabel):
     char_clicked = Signal(str)  # Custom signal to emit the character text when clicked
     
-    # Class variable to track the currently selected CharLabel
-    current_selected = None
     default_style = """
             QLabel {
                 background-color: #FF626262;  /* Background color */
@@ -18,6 +18,17 @@ class CharLabel(QLabel):
                 font-family: "Microsoft YaHei";/* Font family */
                 padding: 7px;                  /* Padding around text */
                 text-align: center;            /* Center alignment */
+            }
+        """
+    selected_style = """
+            QLabel {
+                background-color: #FF626262;  /* Background color */
+                color: white;                  /* Text color */
+                font-size: 80px;               /* Text size */
+                font-family: "Microsoft YaHei";/* Font family */
+                padding: 0px;                  /* Padding around text */
+                text-align: center;            /* Center alignment */
+                border: 7px solid yellow;     /* Border for selected label */
             }
         """
     
@@ -33,23 +44,75 @@ class CharLabel(QLabel):
         self.select()
 
     def select(self):
-        # If there's a previously selected label, remove the border
-        if CharLabel.current_selected:
-            CharLabel.current_selected.setStyleSheet(self.default_style)
+        global current_selected
+        
+        # Deselect the previously selected widget (if any)
+        if current_selected:
+            current_selected.deselect()
+        
+        # Mark this CharLabel as selected
+        current_selected = self
+        
+        # Apply selected style to this widget
+        self.setStyleSheet(self.selected_style)
+    
+    def deselect(self):
+        """Reset the style of the CharLabel to default when deselected."""
+        self.setStyleSheet(self.default_style)
 
-        # Now, select the current label and add the yellow border
-        CharLabel.current_selected = self  # Update the currently selected label
-        self.setStyleSheet("""
+
+# ControlButton: control buttons
+class ControlButton(QLabel):
+    clicked = Signal()
+    default_style = """
             QLabel {
-                background-color: #FF626262;  /* Background color */
-                color: white;                  /* Text color */
-                font-size: 80px;               /* Text size */
-                font-family: "Microsoft YaHei";/* Font family */
-                padding: 0px;                  /* Padding around text */
-                text-align: center;            /* Center alignment */
+                background-color: #FFDDDDDD;  /* Background color */
+                color: black;                   /* Text color */
+                font-size: 48px;              /* Text size */
+                font-family: "Microsoft YaHei";      /* Font family */
+                padding: 7px;                /* Padding around text */
+            }
+        """
+    selected_style = """
+            QLabel {
+                background-color: #FFDDDDDD;  /* Background color */
+                color: black;                   /* Text color */
+                font-size: 48px;              /* Text size */
+                font-family: "Microsoft YaHei";      /* Font family */
+                padding: 0px;                /* Padding around text */
                 border: 7px solid yellow;     /* Border for selected label */
             }
-        """)
+    
+        """
+    
+    def __init__(self, text):
+        super().__init__(text)
+        
+        # Set the desired styling directly in the class
+        self.setStyleSheet(self.default_style)
+        self.setAlignment(Qt.AlignCenter)
+        
+    def mousePressEvent(self, event):
+        # Emit the clicked signal when the label is clicked
+        self.clicked.emit()
+        self.select()
+
+    def select(self):
+        global current_selected
+        
+        # Deselect the previously selected widget (if any)
+        if current_selected:
+            current_selected.deselect()
+        
+        # Mark this ControlButton as selected
+        current_selected = self
+        
+        # Apply selected style to this widget
+        self.setStyleSheet(self.selected_style)
+    
+    def deselect(self):
+        """Reset the style of the ControlButton to default when deselected."""
+        self.setStyleSheet(self.default_style)
 
 
 # TextBlock: Display the user inputs
@@ -69,27 +132,3 @@ class TextBlock(QLabel):
             }
         """)
         self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
-
-
-# ControlButton: control buttons
-class ControlButton(QLabel):
-    clicked = Signal()
-    
-    def __init__(self, text):
-        super().__init__(text)
-        
-        # Set the desired styling directly in the class
-        self.setStyleSheet("""
-            QLabel {
-                background-color: #FFDDDDDD;  /* Background color */
-                color: black;                   /* Text color */
-                font-size: 48px;              /* Text size */
-                font-family: "Microsoft YaHei";      /* Font family */
-                padding: 0px;                /* Padding around text */
-            }
-        """)
-        self.setAlignment(Qt.AlignCenter)
-        
-    def mousePressEvent(self, event):
-        # Emit the clicked signal when the label is clicked
-        self.clicked.emit()
