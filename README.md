@@ -18,8 +18,8 @@ This project provides a Chinese Input Method Editor (IME) for individuals with d
 1. 通过`TTS`朗读输出的文字，使病人获得类似霍金的对话能力
 
 **原理**:
-
-
+1. `opentrack` 头部跟踪输出 `X` 轴坐标并经过 UDP 发送到本程序
+1. 根据头部 `X` 轴的移动控制并点选汉字组成句子，经由 `TTS` 朗读从而实现病人与家属的沟通
 
 
 
@@ -63,7 +63,9 @@ Currently, this project is designed to run on **Windows** only, due to its use o
 
 1. 使用 `Python main.py` 启动程序
 1. 启动 `opentrack`，设置`input`为`neuralnet tracker`，设置`output`为`UDP over network`，最后点击`Start`开始头部跟踪
-
+1. 切换到本程序，点击`开始输入`
+1. 病人通过头部左右转动来选择汉字，并在准备输入的汉字处停留；在所预选的汉字处停留`3s`后，汉字即选中并显示在输出区域
+1. 病人可以通过右侧的控制按钮切换上下页汉字以及删除、朗读输出内容
 
 ---
 
