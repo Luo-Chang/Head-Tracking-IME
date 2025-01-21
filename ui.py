@@ -1,9 +1,14 @@
 from PySide6.QtWidgets import *
-from PySide6.QtCore import QSize
+from PySide6.QtCore import QSize, QTimer
 from PySide6.QtGui import QIcon, QScreen
 from utils.widgets import CharLabel, TextBlock, ControlButton
 from utils.helper import load_vocab
 from utils.tts import invoke_tts
+from utils.udp import UDPListener
+import tomllib
+
+with open("config.toml", "rb") as f:
+    config = tomllib.load(f)
 
 
 class MainWindow(QMainWindow):
@@ -15,17 +20,29 @@ class MainWindow(QMainWindow):
         # status
         self.ALLOW_INPUT = False
         self.FIRST_RUN = True
+        self.yellow_box_position = (0, 0)  # Initial position of the yellow box
+        self.current_page = 0 # Current page (index of characters)
+        
+        # config
+        self.page_rows = config["page_size"]["rows"]
+        self.page_columns = config["page_size"]["columns"]
+        self.page_size = self.page_rows*self.page_columns  # Number of characters per page
+        self.vocab = load_vocab()
+        
+        # Set up UI
+        self.init_ui()
 
         # Set icon
         my_icon = QIcon()
         my_icon.addFile('misc/icon_small.png')
         self.setWindowIcon(my_icon)
 
-        # Current page (index of characters)
-        self.current_page = 0
-        self.page_size = 21  # Number of characters per page
-        self.vocab = load_vocab()
+        # UDP Listener
+        self.udp_listener = UDPListener()
+        self.udp_listener.x_position.connect(self.handle_udp_input)
+        self.udp_listener.start()
 
+    def init_ui(self):
         layout = QVBoxLayout()
 
         # TextBlock section
@@ -48,9 +65,9 @@ class MainWindow(QMainWindow):
 
         # Adding CharLabels to the grid
         self.char_labels = []
-        for i in range(3):
+        for i in range(self.page_rows):
             row = []
-            for j in range(7):
+            for j in range(self.page_columns):
                 char_label = CharLabel("字")
                 char_label.char_clicked.connect(self.add_to_text_block)  # Connect the signal to the handler
                 layout21.addWidget(char_label, i, j)
@@ -67,7 +84,7 @@ class MainWindow(QMainWindow):
         layout222.addWidget(self.prev_button, 0, 0)
         self.next_button = ControlButton("下页")
         layout222.addWidget(self.next_button, 0, 1)
-        self.read_button = ControlButton("朗读")
+        self.read_button = ControlButton("读🔈")
         layout222.addWidget(self.read_button, 1, 0)
         self.delete_button = ControlButton("删除")
         layout222.addWidget(self.delete_button, 1, 1)
@@ -153,6 +170,14 @@ class MainWindow(QMainWindow):
             current_text = self.text_block.text()
             if len(current_text)>0:
                 self.text_block.setText(current_text[:-1])
+    
+    def handle_udp_input(self, x): # 
+        print(f"x: {x}")
+
+    # def closeEvent(self, event):
+    #     self.udp_listener.stop()
+    #     self.udp_listener.wait()
+    #     super().closeEvent(event)
 
 # TODO
 # 2. draw light yellow box and animation

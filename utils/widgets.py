@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import *
 from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QPainter, QPen, QColor, QBrush
 
 # CharLabel: Display a single Chinese character
 class CharLabel(QLabel):
@@ -23,6 +24,8 @@ class CharLabel(QLabel):
     def mousePressEvent(self, event):
         # Emit the signal when the label is clicked
         self.char_clicked.emit(self.text())
+
+    
 
 
 # TextBlock: Display the user inputs

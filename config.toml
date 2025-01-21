@@ -5,3 +5,11 @@ UDP_PORT = 4242
 [timer]
 allow_movement = 1500
 wait_comfirmation = 3000
+
+[threshold]
+left_threshold = 15
+right_threshold = -15
+
+[page_size]
+rows = 3
+columns = 8
