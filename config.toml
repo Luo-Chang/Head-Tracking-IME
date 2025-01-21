@@ -4,6 +4,7 @@ UDP_PORT = 4242
 
 [timer]
 movement_delay = 500
+button_movement_delay = 1000
 comfirmation_delay = 2000
 
 [threshold]

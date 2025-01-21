@@ -40,17 +40,14 @@ class CharLabel(QLabel):
         super().__init__(text)
         self.setStyleSheet(self.default_style)
 
-        # Timer for detecting long press (3 seconds)
+        # Timer for detecting long press 
         self.long_press_timer = QTimer(self)
-        self.long_press_timer.setSingleShot(True)  # Trigger only once after 3 seconds
+        self.long_press_timer.setSingleShot(True)  # Trigger only once
         self.long_press_timer.timeout.connect(self.trigger_long_press)
 
     def mousePressEvent(self, event):
         # Emit the signal when the label is clicked
         self.char_clicked.emit(self.text())
-
-        # Select the clicked label and remove the border from any previously selected one
-        # self.select()
 
     def select(self):
         global current_selected
@@ -65,16 +62,13 @@ class CharLabel(QLabel):
         # Apply selected style to this widget
         self.setStyleSheet(self.selected_style)
 
-        self.start_long_press_timer()
+        """Start the timer when the label is selected."""
+        self.long_press_timer.start(config["timer"]["comfirmation_delay"]) 
     
     def deselect(self):
         """Reset the style of the CharLabel to default when deselected."""
         self.setStyleSheet(self.default_style)
         self.long_press_timer.stop()
-
-    def start_long_press_timer(self):
-        """Start the timer when the label is pressed."""
-        self.long_press_timer.start(config["timer"]["comfirmation_delay"])  # some seconds
 
     def trigger_long_press(self):
         """Trigger the long press action."""
@@ -87,6 +81,8 @@ class CharLabel(QLabel):
 # ControlButton: control buttons
 class ControlButton(QLabel):
     clicked = Signal()
+    long_press_triggered = Signal()  # Custom signal for long press detection
+
     default_style = """
             QLabel {
                 background-color: #FFDDDDDD;  /* Background color */
@@ -114,6 +110,11 @@ class ControlButton(QLabel):
         # Set the desired styling directly in the class
         self.setStyleSheet(self.default_style)
         self.setAlignment(Qt.AlignCenter)
+
+        # Timer for detecting long press 
+        self.long_press_timer = QTimer(self)
+        self.long_press_timer.setSingleShot(True)  # Trigger only once
+        self.long_press_timer.timeout.connect(self.trigger_long_press)
         
     def mousePressEvent(self, event):
         # Emit the clicked signal when the label is clicked
@@ -132,10 +133,21 @@ class ControlButton(QLabel):
         
         # Apply selected style to this widget
         self.setStyleSheet(self.selected_style)
+
+        """Start the timer when the label is selected."""
+        self.long_press_timer.start(config["timer"]["comfirmation_delay"]) 
     
     def deselect(self):
         """Reset the style of the ControlButton to default when deselected."""
         self.setStyleSheet(self.default_style)
+        self.long_press_timer.stop()
+
+    def trigger_long_press(self):
+        """Trigger the long press action."""
+        print(f"Long press on {self.text()} detected.")
+        self.long_press_triggered.emit()  # Emit the long press signal
+
+        self.mousePressEvent(None)  # Trigger the mouse press event 
 
 
 # TextBlock: Display the user inputs

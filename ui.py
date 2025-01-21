@@ -29,6 +29,7 @@ class MainWindow(QMainWindow):
         self.page_size = self.page_rows*self.page_columns  # Number of characters per page
         self.vocab = load_vocab()
         self.movement_delay = config["timer"]["movement_delay"]
+        self.button_movement_delay = config["timer"]["button_movement_delay"]
         
         # Set up UI
         self.init_ui()
@@ -197,12 +198,19 @@ class MainWindow(QMainWindow):
             if self.allow_move:
                 self.move_right()
                 self.allow_move = False
-                self.movement_timer.start(self.movement_delay)  # Start the timer for some delay
+
+                if self.current_index<self.page_size:
+                    self.movement_timer.start(self.movement_delay)  # Start the timer for chars
+                else:
+                    self.movement_timer.start(self.button_movement_delay) # Start the timer for buttons (slower for better control)
         elif x > 15:  # Move left
             if self.allow_move:
                 self.move_left()
                 self.allow_move = False
-                self.movement_timer.start(self.movement_delay)  # Start the timer for some delay
+                if self.current_index<self.page_size:
+                    self.movement_timer.start(self.movement_delay)  # Start the timer for chars
+                else:
+                    self.movement_timer.start(self.button_movement_delay) # Start the timer for buttons (slower for better control)
         else:
             self.movement_timer.stop()  # Stop timer if no movement is detected
             self.allow_move = True  # Allow movement again if no movement
