@@ -154,8 +154,10 @@ class MainWindow(QMainWindow):
         self.text_block.setText("") # clear each time
         if not self.ALLOW_INPUT:
             invoke_tts("开始输入")
+            self.char_labels[0][0].select() # select the first char
             self.ALLOW_INPUT = True
-            self.start_stop_button.setText("输入完毕🛑")
+            self.start_stop_button.setText("结束输入🛑")
+
         else:
             invoke_tts("输入完毕")
             self.ALLOW_INPUT = False
@@ -178,12 +180,3 @@ class MainWindow(QMainWindow):
     
     def handle_udp_input(self, x): # 
         print(f"x: {x}")
-
-    # def closeEvent(self, event):
-    #     self.udp_listener.stop()
-    #     self.udp_listener.wait()
-    #     super().closeEvent(event)
-
-# TODO
-# 2. draw light yellow box and animation
-# 换行自动

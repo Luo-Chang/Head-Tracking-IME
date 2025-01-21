@@ -1,7 +1,6 @@
 from PySide6.QtWidgets import *
 from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QPainter, QPen, QColor, QBrush
-from utils.tts import invoke_tts
 
 # Global variable to track the currently selected CharLabel or ControlButton
 current_selected = None
@@ -28,7 +27,7 @@ class CharLabel(QLabel):
                 font-family: "Microsoft YaHei";/* Font family */
                 padding: 0px;                  /* Padding around text */
                 text-align: center;            /* Center alignment */
-                border: 7px solid yellow;     /* Border for selected label */
+                border: 7px solid #FFB140;     /* Border for selected label */
             }
         """
     
@@ -80,7 +79,7 @@ class ControlButton(QLabel):
                 font-size: 48px;              /* Text size */
                 font-family: "Microsoft YaHei";      /* Font family */
                 padding: 0px;                /* Padding around text */
-                border: 7px solid yellow;     /* Border for selected label */
+                border: 7px solid #FFB140;     /* Border for selected label */
             }
     
         """
@@ -95,7 +94,7 @@ class ControlButton(QLabel):
     def mousePressEvent(self, event):
         # Emit the clicked signal when the label is clicked
         self.clicked.emit()
-        self.select()
+        # self.select()
 
     def select(self):
         global current_selected
