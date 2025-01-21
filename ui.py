@@ -1,14 +1,24 @@
 import sys
 from PySide6.QtWidgets import *
 from PySide6.QtCore import QSize
+from PySide6.QtGui import QIcon, QScreen
 from utils.widgets import CharLabel, TextBlock, ControlButton
 from utils.helper import load_vocab
+from utils.tts import invoke_tts
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Head Tracking IME")
         self.setMinimumSize(QSize(1366, 768))
+
+        # status
+        self.ALLOW_INPUT = False
+
+        # Set icon
+        my_icon = QIcon()
+        my_icon.addFile('misc/icon_small.png')
+        self.setWindowIcon(my_icon)
 
         # Current page (index of characters)
         self.current_page = 0
@@ -47,11 +57,17 @@ class MainWindow(QMainWindow):
         layout221 = QHBoxLayout()
         layout222 = QGridLayout()
 
-        layout221.addWidget(ControlButton("开始输入"))
-        layout222.addWidget(ControlButton("上页"), 0, 0)
-        layout222.addWidget(ControlButton("下页"), 0, 1)
-        layout222.addWidget(ControlButton("朗读"), 1, 0)
-        layout222.addWidget(ControlButton("删除"), 1, 1)
+        self.start_stop_button = ControlButton("开始输入▶")
+        layout221.addWidget(self.start_stop_button)
+
+        self.prev_button = ControlButton("上页")
+        layout222.addWidget(self.prev_button, 0, 0)
+        self.next_button = ControlButton("下页")
+        layout222.addWidget(self.next_button, 0, 1)
+        self.read_button = ControlButton("朗读")
+        layout222.addWidget(self.read_button, 1, 0)
+        self.delete_button = ControlButton("删除")
+        layout222.addWidget(self.delete_button, 1, 1)
 
         layout22.addLayout(layout221, 1)
         layout22.addLayout(layout222, 2)
@@ -67,12 +83,12 @@ class MainWindow(QMainWindow):
         
         # Event handler
         # Connect the button click to the event handler
-        layout222.itemAtPosition(0, 1).widget().clicked.connect(self.next_page)
-        layout222.itemAtPosition(0, 0).widget().clicked.connect(self.prev_page)
+        self.prev_button.clicked.connect(self.prev_page)
+        self.next_button.clicked.connect(self.next_page)
+        self.start_stop_button.clicked.connect(self.start_input)
 
         self.setCentralWidget(self.window_widget)  # Set central widget
-
-        self.update_char_labels()
+        self.update_char_labels() # display vocab
 
     def update_char_labels(self):
         # Calculate the start and end index for the current page
@@ -102,6 +118,17 @@ class MainWindow(QMainWindow):
             self.current_page -= 1
             self.update_char_labels()
 
+    def start_input(self):
+        if not self.ALLOW_INPUT:
+            invoke_tts("开始输入")
+            self.ALLOW_INPUT = True
+            self.start_stop_button.setText("停止输入🛑")
+        else:
+            invoke_tts("停止输入")
+            self.ALLOW_INPUT = False
+            self.start_stop_button.setText("开始输入▶")
+        
+
 
 app = QApplication()
 window = MainWindow()
@@ -109,5 +136,4 @@ window.show()
 app.exec()
 
 # TODO
-# 1. load corpus and set the charlabel
 # 2. draw light yellow box and animation

@@ -14,7 +14,7 @@ for voice in voices:
         speak.Voice = voice
         break
 
-def envoke_tts(text):
+def invoke_tts(text):
     speak.Speak(text)
     
 

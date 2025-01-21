@@ -13,7 +13,7 @@ Chinese IME based on Head Tracking for Disabilities
 
 This project provides a Chinese Input Method Editor (IME) for individuals with disabilities, specifically those with severe conditions like brain strokes that have left them unable to move or speak but still capable of hearing and understanding text. The system leverages **head tracking** to enable text input.
 
-**功能**：
+**功能**:
 1. 通过头部运动使病人能够控制并选择文字输入，用户可自定义病人常用词典(位于`vocab/vocab.txt`，以英语`,`分割)
 1. 通过`TTS`朗读输出的文字，使病人获得类似霍金的对话能力
 
