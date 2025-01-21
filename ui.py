@@ -132,6 +132,7 @@ class MainWindow(QMainWindow):
         """Add the clicked character to the TextBlock."""
         current_text = self.text_block.text()
         self.text_block.setText(current_text + char)
+        # invoke_tts(char)
 
     def next_page(self):
         # Increment the page index and update the grid
@@ -146,22 +147,26 @@ class MainWindow(QMainWindow):
             self.update_char_labels()
 
     def start_stop_input(self):
-        if self.FIRST_RUN:
-            self.text_block.setText("")
-            self.FIRST_RUN = False
-
+        # if self.FIRST_RUN:
+        #     self.text_block.setText("")
+        #     self.FIRST_RUN = False
+        
+        self.text_block.setText("") # clear each time
         if not self.ALLOW_INPUT:
             invoke_tts("开始输入")
             self.ALLOW_INPUT = True
-            self.start_stop_button.setText("停止输入🛑")
+            self.start_stop_button.setText("输入完毕🛑")
         else:
-            invoke_tts("停止输入")
+            invoke_tts("输入完毕")
             self.ALLOW_INPUT = False
             self.start_stop_button.setText("开始输入▶")
 
     def read_loundly(self):
         if self.ALLOW_INPUT:
-            self.start_stop_input()
+            invoke_tts("输入完毕")
+            self.ALLOW_INPUT = False
+            self.start_stop_button.setText("开始输入▶")
+
         # time
         invoke_tts(self.text_block.text())
     

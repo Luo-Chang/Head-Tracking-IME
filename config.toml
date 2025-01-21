@@ -3,8 +3,8 @@ UDP_IP = "127.0.0.1"
 UDP_PORT = 4242
 
 [timer]
-allow_movement = 1500
-wait_comfirmation = 3000
+movement_delay = 1500
+comfirmation_delay = 3000
 
 [threshold]
 left_threshold = 15
