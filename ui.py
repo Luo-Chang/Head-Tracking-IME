@@ -20,14 +20,15 @@ class MainWindow(QMainWindow):
         # status
         self.ALLOW_INPUT = False
         self.FIRST_RUN = True
-        self.yellow_box_position = (0, 0)  # Initial position of the yellow box
         self.current_page = 0 # Current page (index of characters)
-        
+        self.current_index = 0  # Single index to track the current selection
+
         # config
         self.page_rows = config["page_size"]["rows"]
         self.page_columns = config["page_size"]["columns"]
         self.page_size = self.page_rows*self.page_columns  # Number of characters per page
         self.vocab = load_vocab()
+        self.movement_delay = config["timer"]["movement_delay"]
         
         # Set up UI
         self.init_ui()
@@ -41,6 +42,12 @@ class MainWindow(QMainWindow):
         self.udp_listener = UDPListener()
         self.udp_listener.x_position.connect(self.handle_udp_input)
         self.udp_listener.start()
+
+        # Timer to handle debounce
+        self.allow_move = True  # Flag to allow movement
+        self.movement_timer = QTimer(self)
+        self.movement_timer.setSingleShot(True)  # Ensures it only fires once
+        self.movement_timer.timeout.connect(self.allow_movement)  # When timer ends, we allow movement
 
     def init_ui(self):
         layout = QVBoxLayout()
@@ -65,6 +72,7 @@ class MainWindow(QMainWindow):
 
         # Adding CharLabels to the grid
         self.char_labels = []
+        self.char_label_list = [] # flat version
         for i in range(self.page_rows):
             row = []
             for j in range(self.page_columns):
@@ -72,22 +80,26 @@ class MainWindow(QMainWindow):
                 char_label.char_clicked.connect(self.add_to_text_block)  # Connect the signal to the handler
                 layout21.addWidget(char_label, i, j)
                 row.append(char_label)
+                self.char_label_list.append(char_label)
             self.char_labels.append(row)
         
         layout221 = QHBoxLayout()
         layout222 = QGridLayout()
 
-        self.start_stop_button = ControlButton("开始输入▶")
+        self.start_stop_button = ControlButton("开始输入▶️")
         layout221.addWidget(self.start_stop_button)
 
         self.prev_button = ControlButton("上页")
         layout222.addWidget(self.prev_button, 0, 0)
         self.next_button = ControlButton("下页")
         layout222.addWidget(self.next_button, 0, 1)
-        self.read_button = ControlButton("读🔈")
+        self.read_button = ControlButton("读📣")
         layout222.addWidget(self.read_button, 1, 0)
         self.delete_button = ControlButton("删除")
         layout222.addWidget(self.delete_button, 1, 1)
+
+        self.control_button_list = [self.start_stop_button, self.prev_button, self.next_button, self.read_button, self.delete_button]
+        self.full_widget_list = self.char_label_list + self.control_button_list
 
         layout22.addLayout(layout221, 1)
         layout22.addLayout(layout222, 2)
@@ -161,13 +173,13 @@ class MainWindow(QMainWindow):
         else:
             invoke_tts("输入完毕")
             self.ALLOW_INPUT = False
-            self.start_stop_button.setText("开始输入▶")
+            self.start_stop_button.setText("开始输入▶️")
 
     def read_loundly(self):
         if self.ALLOW_INPUT:
             invoke_tts("输入完毕")
             self.ALLOW_INPUT = False
-            self.start_stop_button.setText("开始输入▶")
+            self.start_stop_button.setText("开始输入▶️")
 
         # time
         invoke_tts(self.text_block.text())
@@ -178,5 +190,36 @@ class MainWindow(QMainWindow):
             if len(current_text)>0:
                 self.text_block.setText(current_text[:-1])
     
-    def handle_udp_input(self, x): # 
+    def handle_udp_input(self, x):
         print(f"x: {x}")
+        
+        if x < -15:  # Move right
+            if self.allow_move:
+                self.move_right()
+                self.allow_move = False
+                self.movement_timer.start(self.movement_delay)  # Start the timer for 500ms delay
+        elif x > 15:  # Move left
+            if self.allow_move:
+                self.move_left()
+                self.allow_move = False
+                self.movement_timer.start(self.movement_delay)  # Start the timer for 500ms delay
+        else:
+            self.movement_timer.stop()  # Stop timer if no movement is detected
+            self.allow_move = True  # Allow movement again if no movement
+
+    def allow_movement(self):
+        self.allow_move = True
+
+    def move_right(self):
+        """Move selection to the right in the combined widget list."""
+        self.current_index += 1
+        if self.current_index >= len(self.full_widget_list):  # Wrap around
+            self.current_index = 0
+        self.full_widget_list[self.current_index].select()
+
+    def move_left(self):
+        """Move selection to the left in the combined widget list."""
+        self.current_index -= 1
+        if self.current_index < 0:  # Wrap around
+            self.current_index = len(self.full_widget_list) - 1
+        self.full_widget_list[self.current_index].select()
