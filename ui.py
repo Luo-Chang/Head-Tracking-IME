@@ -143,9 +143,10 @@ class MainWindow(QMainWindow):
 
     def add_to_text_block(self, char):
         """Add the clicked character to the TextBlock."""
-        current_text = self.text_block.text()
-        self.text_block.setText(current_text + char)
-        # invoke_tts(char)
+        if self.ALLOW_INPUT:
+            current_text = self.text_block.text()
+            self.text_block.setText(current_text + char)
+            invoke_tts(char)
 
     def next_page(self):
         # Increment the page index and update the grid
@@ -164,10 +165,11 @@ class MainWindow(QMainWindow):
         #     self.text_block.setText("")
         #     self.FIRST_RUN = False
         
-        self.text_block.setText("") # clear each time
         if not self.ALLOW_INPUT:
+            self.text_block.setText("") # clear each time
             invoke_tts("开始输入")
             self.char_labels[0][0].select() # select the first char
+            self.current_index = 0
             self.ALLOW_INPUT = True
             self.start_stop_button.setText("结束输入🛑")
 
@@ -194,16 +196,15 @@ class MainWindow(QMainWindow):
     def handle_udp_input(self, x):
         # print(f"x: {x}")
         
-        if x < -15:  # Move right
+        if x < config["threshold"]["right_threshold"]:  # Move right
             if self.allow_move:
                 self.move_right()
                 self.allow_move = False
-
                 if self.current_index<self.page_size:
                     self.movement_timer.start(self.movement_delay)  # Start the timer for chars
                 else:
                     self.movement_timer.start(self.button_movement_delay) # Start the timer for buttons (slower for better control)
-        elif x > 15:  # Move left
+        elif x > config["threshold"]["left_threshold"]:  # Move left
             if self.allow_move:
                 self.move_left()
                 self.allow_move = False
