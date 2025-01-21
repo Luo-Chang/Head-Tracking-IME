@@ -40,7 +40,7 @@ class CharLabel(QLabel):
         self.char_clicked.emit(self.text())
 
         # Select the clicked label and remove the border from any previously selected one
-        self.select()
+        # self.select()
 
     def select(self):
         global current_selected

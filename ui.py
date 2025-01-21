@@ -197,12 +197,12 @@ class MainWindow(QMainWindow):
             if self.allow_move:
                 self.move_right()
                 self.allow_move = False
-                self.movement_timer.start(self.movement_delay)  # Start the timer for 500ms delay
+                self.movement_timer.start(self.movement_delay)  # Start the timer for some delay
         elif x > 15:  # Move left
             if self.allow_move:
                 self.move_left()
                 self.allow_move = False
-                self.movement_timer.start(self.movement_delay)  # Start the timer for 500ms delay
+                self.movement_timer.start(self.movement_delay)  # Start the timer for some delay
         else:
             self.movement_timer.stop()  # Stop timer if no movement is detected
             self.allow_move = True  # Allow movement again if no movement
