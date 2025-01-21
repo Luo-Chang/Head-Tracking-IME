@@ -11,11 +11,13 @@ Chinese IME based on Head Tracking for Disabilities
 
 该项目适用于重度脑梗致瘫病人无法活动、丧失语言能力，但是能听、能理解文字，头部能够运动的情况。通过**头部跟踪**使病人能够自主选择并输出文字从而恢复与家属的沟通和交流。
 
+*下述`用户`指的是帮助`病人`启动并配置本程序的人员（如家属）
+
 This project provides a Chinese Input Method Editor (IME) for individuals with disabilities, specifically those with severe conditions like brain strokes that have left them unable to move or speak but still capable of hearing and understanding text. The system leverages **head tracking** to enable text input.
 
 **功能**:
-1. 通过头部运动使病人能够控制并选择文字输入，用户可自定义病人常用词典(位于`vocab/vocab.txt`，以英语`,`分割)
-1. 通过`TTS`朗读输出的文字，使病人获得类似霍金的对话能力
+1. 病人通过头部运动控制并选择文字输入，用户可自定义病人常用词典(位于`vocab/vocab.txt`，以英语`,`分割)
+1. 通过`TTS`朗读输出的文字，病人可以获得类似霍金的对话能力
 
 **原理**:
 1. `opentrack` 头部跟踪输出 `X` 轴坐标并经过 UDP 发送到本程序
@@ -64,9 +66,9 @@ Currently, this project is designed to run on **Windows** only, due to its use o
 1. 使用 `python main.py` 启动程序
 1. 启动 `opentrack`，设置`input`为`neuralnet tracker`，设置`output`为`UDP over network`，最后点击`Start`开始头部跟踪
 1. 切换到本程序，点击`开始输入`
-1. 病人通过头部左右转动来选择汉字，并在准备输入的汉字处停留；在所预选的汉字处停留`3s`后，汉字即选中并显示在输出区域
+1. 病人通过头部左右转动来选择汉字，并在准备输入的汉字处停留；在所预选的汉字处停留`2s`(可调整)后，汉字即选中并显示在输出区域
 1. 病人可以通过右侧的控制按钮切换上下页汉字以及删除、朗读(TTS)输出内容
-
+1. 用户可以通过`config.toml`更改相关时长、页面布局、头部跟踪灵敏度等设置
 ---
 
 ## 许可 License
