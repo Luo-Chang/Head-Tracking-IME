@@ -9,7 +9,7 @@ Chinese IME based on Head Tracking for Disabilities
 
 ## 概览 Overview
 
-该项目适用于重度脑梗致瘫病人无法活动、丧失语言能力，但是能听、能理解文字，头部能够运动的情况。通过头部追踪使病人能够自主选择并输出文字从而恢复与家属的沟通和交流。
+该项目适用于重度脑梗致瘫病人无法活动、丧失语言能力，但是能听、能理解文字，头部能够运动的情况。通过**头部跟踪**使病人能够自主选择并输出文字从而恢复与家属的沟通和交流。
 
 This project provides a Chinese Input Method Editor (IME) for individuals with disabilities, specifically those with severe conditions like brain strokes that have left them unable to move or speak but still capable of hearing and understanding text. The system leverages **head tracking** to enable text input.
 

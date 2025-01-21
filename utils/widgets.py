@@ -3,6 +3,8 @@ from PySide6.QtCore import Qt, Signal
 
 # CharLabel: Display a single Chinese character
 class CharLabel(QLabel):
+    char_clicked = Signal(str) # Custom signal to emit the character text when clicked
+
     def __init__(self, text):
         super().__init__(text)
         
@@ -18,11 +20,16 @@ class CharLabel(QLabel):
             }
         """)
 
+    def mousePressEvent(self, event):
+        # Emit the signal when the label is clicked
+        self.char_clicked.emit(self.text())
+
 
 # TextBlock: Display the user inputs
 class TextBlock(QLabel):
     def __init__(self, text):
         super().__init__(text)
+        self.setWordWrap(True)
         
         # Set the desired styling directly in the class
         self.setStyleSheet("""

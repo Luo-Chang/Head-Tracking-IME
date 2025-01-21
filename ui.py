@@ -5,6 +5,7 @@ from utils.widgets import CharLabel, TextBlock, ControlButton
 from utils.helper import load_vocab
 from utils.tts import invoke_tts
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -13,6 +14,7 @@ class MainWindow(QMainWindow):
 
         # status
         self.ALLOW_INPUT = False
+        self.FIRST_RUN = True
 
         # Set icon
         my_icon = QIcon()
@@ -28,7 +30,8 @@ class MainWindow(QMainWindow):
 
         # TextBlock section
         layout1 = QHBoxLayout()
-        layout1.addWidget(TextBlock("输入的文字将在这里显示..."))  # Text display area
+        self.text_block = TextBlock("输入的文字将在这里显示...")
+        layout1.addWidget(self.text_block)  # Text display area
 
         # Layout for other sections
         layout2 = QHBoxLayout()
@@ -49,6 +52,7 @@ class MainWindow(QMainWindow):
             row = []
             for j in range(7):
                 char_label = CharLabel("字")
+                char_label.char_clicked.connect(self.add_to_text_block)  # Connect the signal to the handler
                 layout21.addWidget(char_label, i, j)
                 row.append(char_label)
             self.char_labels.append(row)
@@ -84,7 +88,9 @@ class MainWindow(QMainWindow):
         # Connect the button click to the event handler
         self.prev_button.clicked.connect(self.prev_page)
         self.next_button.clicked.connect(self.next_page)
-        self.start_stop_button.clicked.connect(self.start_input)
+        self.start_stop_button.clicked.connect(self.start_stop_input)
+        self.read_button.clicked.connect(self.read_loundly)
+        self.delete_button.clicked.connect(self.delete)
 
         self.setCentralWidget(self.window_widget)  # Set central widget
         self.update_char_labels() # display vocab
@@ -105,6 +111,11 @@ class MainWindow(QMainWindow):
             else:
                 char_label.setText("")  # Clear any remaining labels if fewer characters
 
+    def add_to_text_block(self, char):
+        """Add the clicked character to the TextBlock."""
+        current_text = self.text_block.text()
+        self.text_block.setText(current_text + char)
+
     def next_page(self):
         # Increment the page index and update the grid
         if self.current_page * self.page_size + self.page_size < len(self.vocab):
@@ -117,7 +128,11 @@ class MainWindow(QMainWindow):
             self.current_page -= 1
             self.update_char_labels()
 
-    def start_input(self):
+    def start_stop_input(self):
+        if self.FIRST_RUN:
+            self.text_block.setText("")
+            self.FIRST_RUN = False
+
         if not self.ALLOW_INPUT:
             invoke_tts("开始输入")
             self.ALLOW_INPUT = True
@@ -126,7 +141,19 @@ class MainWindow(QMainWindow):
             invoke_tts("停止输入")
             self.ALLOW_INPUT = False
             self.start_stop_button.setText("开始输入▶")
-        
+
+    def read_loundly(self):
+        if self.ALLOW_INPUT:
+            self.start_stop_input()
+        # time
+        invoke_tts(self.text_block.text())
+    
+    def delete(self):
+        if self.ALLOW_INPUT:
+            current_text = self.text_block.text()
+            if len(current_text)>0:
+                self.text_block.setText(current_text[:-1])
 
 # TODO
 # 2. draw light yellow box and animation
+# 换行自动
