@@ -17,3 +17,7 @@ columns = 8
 
 [tts]
 repeat = 3
+
+[ui]
+full_screen = true
+esc_exit = true

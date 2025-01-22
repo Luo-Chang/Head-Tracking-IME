@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import *
-from PySide6.QtCore import QSize, QTimer
+from PySide6.QtCore import QSize, QTimer, Qt
 from PySide6.QtGui import QIcon, QScreen
 from utils.widgets import CharLabel, TextBlock, ControlButton
 from utils.helper import load_vocab
@@ -90,9 +90,9 @@ class MainWindow(QMainWindow):
         self.start_stop_button = ControlButton("开始输入▶️")
         layout221.addWidget(self.start_stop_button)
 
-        self.prev_button = ControlButton("上页")
+        self.prev_button = ControlButton("上页🔼")
         layout222.addWidget(self.prev_button, 0, 0)
-        self.next_button = ControlButton("下页")
+        self.next_button = ControlButton("下页🔽")
         layout222.addWidget(self.next_button, 0, 1)
         self.read_button = ControlButton("读📣")
         layout222.addWidget(self.read_button, 1, 0)
@@ -124,6 +124,9 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self.window_widget)  # Set central widget
         self.update_char_labels() # display vocab
+
+        # select the first Char as default state
+        self.char_labels[0][0].select(is_default_selection=True)
 
     def update_char_labels(self):
         # Calculate the start and end index for the current page
@@ -186,6 +189,7 @@ class MainWindow(QMainWindow):
     
     def delete(self):
         if self.ALLOW_INPUT:
+            async_invoke_tts("删除")
             current_text = self.text_block.text()
             if len(current_text)>0:
                 self.text_block.setText(current_text[:-1])
@@ -229,3 +233,10 @@ class MainWindow(QMainWindow):
         if self.current_index < 0:  # Wrap around
             self.current_index = len(self.full_widget_list) - 1
         self.full_widget_list[self.current_index].select()
+
+    def keyPressEvent(self, event):
+        if config["ui"]["esc_exit"] and event.key() == Qt.Key_Escape:
+            self.close()  # Close the window when ESC is pressed
+        else:
+            super().keyPressEvent(event)  # Call the base class method for other keys
+            
