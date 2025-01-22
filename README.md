@@ -1,6 +1,6 @@
 ## ![screen](./misc/icon_small.png) Head Tracking IME
 
-一款基于头部跟踪的为重度残障人士服务的中文输入、交流工具。
+一款基于头部跟踪的为重度残障人士提供语言能力支持的中文输入、交流工具。
 
 Chinese IME based on Head Tracking for Disabilities
 
@@ -63,12 +63,12 @@ Currently, this project is designed to run on **Windows** only, due to its use o
 
 ## 使用方法 Usage
 
-1. 使用 `python main.py` 启动程序
 1. 启动 `opentrack`，设置`input`为`neuralnet tracker`，设置`output`为`UDP over network`，最后点击`Start`开始头部跟踪
-1. 切换到本程序，点击`开始输入`
+1. 使用 `python main.py` 启动本程序，点击`开始输入`
 1. 病人通过头部左右转动来选择汉字，并在准备输入的汉字处停留；在所预选的汉字处停留`2s`(可调整)后，汉字即选中并显示在输出区域
 1. 病人可以通过右侧的控制按钮切换上下页汉字以及删除、朗读(TTS)输出内容
 1. 用户可以通过`config.toml`更改相关时长、页面布局、头部跟踪灵敏度等设置
+1. 用户可以通过修改`vocab/vocab.txt`添加常用字、调整字的顺序，注意字与字之间用英文逗号`,`分隔
 
 
 ## 许可 License
