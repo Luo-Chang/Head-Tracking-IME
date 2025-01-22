@@ -69,7 +69,7 @@ Currently, this project is designed to run on **Windows** only, due to its use o
 1. 病人可以通过右侧的控制按钮切换上下页汉字以及删除、朗读(TTS)输出内容
 1. 用户可以通过`config.toml`更改相关时长、页面布局、头部跟踪灵敏度等设置
 1. 用户可以通过修改`vocab/vocab.txt`添加常用字、调整字的顺序，注意字与字之间用英文逗号`,`分隔
-
+1. `ESC`键退出程序
 
 ## 许可 License
 
