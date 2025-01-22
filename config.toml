@@ -19,7 +19,7 @@ columns = 8
 repeat = 3
 
 [ui]
-full_screen = true
+full_screen = false
 esc_exit = true
 char_font_size = 80
 button_font_size = 48
