@@ -1,17 +1,17 @@
-[udp]
+[udp]                           # UDP config should align with opentrack's output - UDP over network
 UDP_IP = "127.0.0.1"
 UDP_PORT = 4242
 
 [timer]
-movement_delay = 500
-button_movement_delay = 1000
-comfirmation_delay = 2000
+movement_delay = 500            # movement delay of the bounding box for Character selection
+button_movement_delay = 1000    # movement delay in the Control area (the right-side blue area)
+comfirmation_delay = 2000       # the length of stay for character selection
 
 [threshold]
-left_threshold = 15
+left_threshold = 15             # left move threshold based on the received opentrack's x position
 right_threshold = -15
 
-[page_size]
+[page_size]                     # how many characters per page
 rows = 3
 columns = 8
 
@@ -21,3 +21,6 @@ repeat = 3
 [ui]
 full_screen = true
 esc_exit = true
+char_font_size = 80
+button_font_size = 48
+display_font_size = 64

@@ -14,26 +14,26 @@ class CharLabel(QLabel):
     char_clicked = Signal(str)  # Custom signal to emit the character text when clicked
     long_press_triggered = Signal()  # Custom signal for long press detection
 
-    default_style = """
-            QLabel {
+    default_style = f"""
+            QLabel {{
                 background-color: #FF626262;  /* Background color */
                 color: white;                   /* Text color */
-                font-size: 80px;               /* Text size */
+                font-size: {config["ui"]["char_font_size"]}px;               /* Text size */
                 font-family: "Microsoft YaHei";/* Font family */
                 padding: 7px;                  /* Padding around text */
                 text-align: center;            /* Center alignment */
-            }
+            }}
         """
-    selected_style = """
-            QLabel {
+    selected_style = f"""
+            QLabel {{
                 background-color: #FF626262;  /* Background color */
                 color: white;                  /* Text color */
-                font-size: 80px;               /* Text size */
+                font-size: {config["ui"]["char_font_size"]}px;               /* Text size */
                 font-family: "Microsoft YaHei";/* Font family */
                 padding: 0px;                  /* Padding around text */
                 text-align: center;            /* Center alignment */
                 border: 7px solid #FFB140;     /* Border for selected label */
-            }
+            }}
         """
     
     def __init__(self, text):
@@ -84,25 +84,24 @@ class ControlButton(QLabel):
     clicked = Signal()
     long_press_triggered = Signal()  # Custom signal for long press detection
 
-    default_style = """
-            QLabel {
+    default_style = f"""
+            QLabel {{
                 background-color: #FFDDDDDD;  /* Background color */
                 color: black;                   /* Text color */
-                font-size: 48px;              /* Text size */
+                font-size: {config["ui"]["button_font_size"]}px;              /* Text size */
                 font-family: "Microsoft YaHei";      /* Font family */
                 padding: 7px;                /* Padding around text */
-            }
+            }}
         """
-    selected_style = """
-            QLabel {
+    selected_style = f"""
+            QLabel {{
                 background-color: #FFDDDDDD;  /* Background color */
                 color: black;                   /* Text color */
-                font-size: 48px;              /* Text size */
+                font-size: {config["ui"]["button_font_size"]}px;              /* Text size */
                 font-family: "Microsoft YaHei";      /* Font family */
                 padding: 0px;                /* Padding around text */
                 border: 7px solid #FFB140;     /* Border for selected label */
-            }
-    
+            }}
         """
     
     def __init__(self, text):
@@ -158,13 +157,13 @@ class TextBlock(QLabel):
         self.setWordWrap(True)
         
         # Set the desired styling directly in the class
-        self.setStyleSheet("""
-            QLabel {
+        self.setStyleSheet(f"""
+            QLabel {{
                 background-color: white;  /* Background color */
                 color: black;                   /* Text color */
-                font-size: 64px;              /* Text size */
+                font-size: {config["ui"]["display_font_size"]}px;              /* Text size */
                 font-family: "Microsoft YaHei";      /* Font family */
                 padding: 1px;                /* Padding around text */
-            }
+            }}
         """)
         self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
