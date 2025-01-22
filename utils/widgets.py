@@ -49,7 +49,7 @@ class CharLabel(QLabel):
         # Emit the signal when the label is clicked
         self.char_clicked.emit(self.text())
 
-    def select(self):
+    def select(self, is_default_selection=False):
         global current_selected
         
         # Deselect the previously selected widget (if any)
@@ -63,7 +63,8 @@ class CharLabel(QLabel):
         self.setStyleSheet(self.selected_style)
 
         """Start the timer when the label is selected."""
-        self.long_press_timer.start(config["timer"]["comfirmation_delay"]) 
+        if not is_default_selection:
+            self.long_press_timer.start(config["timer"]["comfirmation_delay"]) 
     
     def deselect(self):
         """Reset the style of the CharLabel to default when deselected."""

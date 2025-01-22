@@ -1,6 +1,6 @@
 ## ![screen](./misc/icon_small.png) Head Tracking IME
 
-一款基于头部跟踪的为残障人士服务的中文输入、交流工具。
+一款基于头部跟踪的为重度残障人士服务的中文输入、交流工具。
 
 Chinese IME based on Head Tracking for Disabilities
 

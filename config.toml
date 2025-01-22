@@ -14,3 +14,6 @@ right_threshold = -15
 [page_size]
 rows = 3
 columns = 8
+
+[tts]
+repeat = 3

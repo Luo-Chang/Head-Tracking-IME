@@ -17,6 +17,12 @@ for voice in voices:
 
 def invoke_tts(text):
     speak.Speak(text)
+
+def async_invoke_tts(text, repeat_count=1, delay=500):
+    for _ in range(repeat_count):
+        threading.Thread(target=invoke_tts, args=(text,)).start()
+        if repeat_count>1:
+            time.sleep(delay/1000)  # Adjust sleep time as needed for better pacing
     
     
 if __name__=="__main__":
@@ -28,3 +34,5 @@ if __name__=="__main__":
 
     text = "This text is read after 3 seconds"
     invoke_tts(text)
+
+    async_invoke_tts("你好，欢迎使用TTS功能！", 3)

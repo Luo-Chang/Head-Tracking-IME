@@ -3,7 +3,7 @@ from PySide6.QtCore import QSize, QTimer
 from PySide6.QtGui import QIcon, QScreen
 from utils.widgets import CharLabel, TextBlock, ControlButton
 from utils.helper import load_vocab
-from utils.tts import invoke_tts
+from utils.tts import invoke_tts, async_invoke_tts
 from utils.udp import UDPListener
 import tomllib
 
@@ -14,7 +14,7 @@ with open("config.toml", "rb") as f:
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Head Tracking IME")
+        self.setWindowTitle("头部跟踪中文输入工具 - Head Tracking IME")
         self.setMinimumSize(QSize(1366, 768))
 
         # status
@@ -131,11 +131,8 @@ class MainWindow(QMainWindow):
         end_index = start_index + self.page_size
         chars_to_display = self.vocab[start_index:end_index]
 
-        # Flatten the 2D list of CharLabels to a 1D list
-        char_label_list = [label for row in self.char_labels for label in row]
-
         # Update each CharLabel with the new character
-        for i, char_label in enumerate(char_label_list):
+        for i, char_label in enumerate(self.char_label_list):
             if i < len(chars_to_display):
                 char_label.setText(chars_to_display[i])
             else:
@@ -146,7 +143,7 @@ class MainWindow(QMainWindow):
         if self.ALLOW_INPUT:
             current_text = self.text_block.text()
             self.text_block.setText(current_text + char)
-            invoke_tts(char)
+            async_invoke_tts(char, delay=0)
 
     def next_page(self):
         # Increment the page index and update the grid
@@ -168,7 +165,7 @@ class MainWindow(QMainWindow):
         if not self.ALLOW_INPUT:
             self.text_block.setText("") # clear each time
             invoke_tts("开始输入")
-            self.char_labels[0][0].select() # select the first char
+            self.char_labels[0][0].select(is_default_selection=True) # select the first char
             self.current_index = 0
             self.ALLOW_INPUT = True
             self.start_stop_button.setText("结束输入🛑")
@@ -184,8 +181,8 @@ class MainWindow(QMainWindow):
             self.ALLOW_INPUT = False
             self.start_stop_button.setText("开始输入▶️")
 
-        # time
-        invoke_tts(self.text_block.text())
+        # N times
+        async_invoke_tts(self.text_block.text(), config["tts"]["repeat"])
     
     def delete(self):
         if self.ALLOW_INPUT:
